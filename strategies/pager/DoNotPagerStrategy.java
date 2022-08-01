@@ -11,11 +11,13 @@ import top.yudoge.mybatis.interceptors.pager.Config;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DoNotPagerStrategy<E> extends AbstractPagerStrategy<E> {
+public class DoNotPagerStrategy<E> implements PagerStrategy {
 
+
+    private final Executor executor;
 
     public DoNotPagerStrategy(Config config, Executor e) {
-        super(config, e);
+        this.executor = e;
     }
 
     @Override

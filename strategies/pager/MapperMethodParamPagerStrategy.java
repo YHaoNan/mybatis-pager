@@ -18,17 +18,16 @@ public class MapperMethodParamPagerStrategy<E> extends AbstractPagerStrategy<E> 
     }
 
     @Override
-    public List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException {
+    public RowBounds getPageNumberAndSize(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) {
         MapperMethod.ParamMap paramMap = (MapperMethod.ParamMap) parameter;
+
         int pageNum = 0;
         int pageSize = Integer.MAX_VALUE;
+
         try {
             pageNum = (int) paramMap.get(config.getMapperParamPageNumKey());
             pageSize = (int) paramMap.get(config.getMapperParamPageSizeKey());
         } catch (Exception e) {}
-
-        String pagedSql = getDialectStrategy().build(pageNum, pageSize, getSql(boundSql));
-        BoundSql newBoundSql = new BoundSql(ms.getConfiguration(), pagedSql, ms.getParameterMap().getParameterMappings(), boundSql.getParameterObject());
-        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, newBoundSql);
+        return new RowBounds(pageNum - 1, pageSize);
     }
 }

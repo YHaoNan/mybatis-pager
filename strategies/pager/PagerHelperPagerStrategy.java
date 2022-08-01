@@ -21,23 +21,13 @@ public class PagerHelperPagerStrategy<E> extends AbstractPagerStrategy<E> {
     }
 
     @Override
-    public List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException {
-        SQLException sqlException = null;
-        try {
-            RowBounds myRowBounds = PagerHelper.getPage();
-            String pagedSql = getDialectStrategy().build(myRowBounds.getOffset() + 1, myRowBounds.getLimit(), getSql(boundSql));
-            BoundSql newBoundSql = new BoundSql(ms.getConfiguration(), pagedSql, ms.getParameterMap().getParameterMappings(), boundSql.getParameterObject());
-            return executor.query(ms, parameter, rowBounds,resultHandler, cacheKey, newBoundSql);
-        } catch (SQLException e) {
-            sqlException = e;
-        } catch (Exception e) {
-            logger.warn("PagerHelperPagerStrategy crash an exception when page", e);
-        } finally {
-            if (config.getPageHelperAutoClear())
-                PagerHelper.clearPage();
-        }
-        if (sqlException != null)
-            throw sqlException;
-        return null;
+    public RowBounds getPageNumberAndSize(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) {
+        return PagerHelper.getPage();
+    }
+
+    @Override
+    public void onQueryDone(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) {
+        if (config.getPageHelperAutoClear())
+            PagerHelper.clearPage();
     }
 }

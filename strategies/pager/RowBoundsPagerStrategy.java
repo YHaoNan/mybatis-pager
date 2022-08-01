@@ -18,9 +18,7 @@ public class RowBoundsPagerStrategy<E> extends AbstractPagerStrategy<E> {
     }
 
     @Override
-    public List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException {
-        String pagedSql = getDialectStrategy().build(rowBounds.getOffset() + 1, rowBounds.getLimit(), getSql(boundSql));
-        BoundSql newBoundSql = new BoundSql(ms.getConfiguration(), pagedSql, ms.getParameterMap().getParameterMappings(), boundSql.getParameterObject());
-        return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, newBoundSql);
+    public RowBounds getPageNumberAndSize(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) {
+        return rowBounds;
     }
 }
