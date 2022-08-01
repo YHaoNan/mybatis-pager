@@ -30,4 +30,5 @@ public class MapperMethodParamPagerStrategy<E> extends AbstractPagerStrategy<E> 
         } catch (Exception e) {}
         return new RowBounds(pageNum - 1, pageSize);
     }
+
 }
